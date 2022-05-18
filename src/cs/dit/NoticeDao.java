@@ -77,6 +77,9 @@ public class NoticeDao {
 				dto.setTitle(rs.getString("title"));
 				dto.setTxtarea(rs.getString("txtarea"));
 			}
+			catch (Exception e) {
+				e.printStackTrace();
+			}
 		}catch(Exception e) {
 			e.printStackTrace();
 		}

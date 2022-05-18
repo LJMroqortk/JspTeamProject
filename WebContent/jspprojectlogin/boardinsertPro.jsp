@@ -1,37 +1,19 @@
-<<<<<<< HEAD
+<%@page import="cs.dit.NoticeDto"%>
+<%@page import="cs.dit.NoticeDao"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8" import="java.sql.*"%>
 <% 
 	request.setCharacterEncoding("UTF-8");
-
-	String id = "";
-	String title = "";
-	String date = "";
-	String txtarea = "";
+	String id = request.getParameter("id");	 	
+	String date = request.getParameter("date");	 	
+	String title = request.getParameter("title");
+	String txtarea = request.getParameter("txtarea");
 	
-	id = request.getParameter("id");
-	title = request.getParameter("title");
-	date = request.getParameter("date");
-	txtarea = request.getParameter("txtarea");
-	//1. jdbc 드라이버 로드
-		Class.forName("org.mariadb.jdbc.Driver");
-	//2. 커넥션 얻기
-		String url = "jdbc:mariadb://localhost:3306/LJMDB";
-		String user = "leejumyeong";
-		String password = "1111";
-		Connection con = DriverManager.getConnection(url,user,password);
-	//3. SQL 실행 준비
-		String sql = "insert into board(id,date,title,txtarea) values(?,?,?,?)";
-	 		Statement stmt;
-	 		stmt = con.createStatement();
- 	//4. SQL 실행
-	 	PreparedStatement pstpmt = con.prepareStatement(sql);
-	 	pstpmt.setString(1, id);
-	 	pstpmt.setString(2, date);
-	 	pstpmt.setString(3, title);
-	 	pstpmt.setString(4, txtarea);
-	 	pstpmt.executeUpdate();
-	 	
+	NoticeDto dto = new NoticeDto(id,date,title,txtarea);
+	NoticeDao dao = new NoticeDao();
+	
+	dao.insert(dto);
+	response.sendRedirect("boardlist.jsp");
 %>
 <!DOCTYPE html>
 <html>
@@ -40,61 +22,5 @@
 <title>Insert title here</title>
 </head>
 <body>
-	<%
-		con.close();
-		pstpmt.close();
-		
-		response.sendRedirect("boardlist.jsp");
-	%>
 </body>
-=======
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8" import="java.sql.*"%>
-<% 
-	request.setCharacterEncoding("UTF-8");
-
-	String id = "";
-	String title = "";
-	String date = "";
-	String txtarea = "";
-	
-	id = request.getParameter("id");
-	title = request.getParameter("title");
-	date = request.getParameter("date");
-	txtarea = request.getParameter("txtarea");
-	//1. jdbc 드라이버 로드
-		Class.forName("org.mariadb.jdbc.Driver");
-	//2. 커넥션 얻기
-		String url = "jdbc:mariadb://localhost:3306/LJMDB";
-		String user = "LJM";
-		String password = "1111";
-		Connection con = DriverManager.getConnection(url,user,password);
-	//3. SQL 실행 준비
-		String sql = "insert into board(id,date,title,txtarea) values(?,?,?,?)";
-	 		Statement stmt;
-	 		stmt = con.createStatement();
- 	//4. SQL 실행
-	 	PreparedStatement pstpmt = con.prepareStatement(sql);
-	 	pstpmt.setString(1, id);
-	 	pstpmt.setString(2, date);
-	 	pstpmt.setString(3, title);
-	 	pstpmt.setString(4, txtarea);
-	 	pstpmt.executeUpdate();
-	 	
-%>
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>Insert title here</title>
-</head>
-<body>
-	<%
-		con.close();
-		pstpmt.close();
-		
-		response.sendRedirect("boardlist.jsp");
-	%>
-</body>
->>>>>>> 26cc58615144642b51cbfe62422defc8d2eb2059
 </html>

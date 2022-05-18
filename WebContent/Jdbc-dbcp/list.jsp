@@ -7,18 +7,9 @@
 //DBCP를 사용하여 DB 연동
 	Context initCtx = new InitialContext();
 	Context envCtx = (Context)initCtx.lookup("java:comp/env");
-	DataSource ds = (DataSource)envCtx.lookup("jdbc/ljm2012");
+	DataSource ds = (DataSource)envCtx.lookup("jdbc/ljmdb");
 	Connection con = ds.getConnection();
 	
-	//1. jdbc driver 등록
-	//Class.forName("org.mariadb.jdbc.Driver");
-	//2. db 와 연결 (Connection) 생성
-//	String url = "jdbc:mariadb://localhost:3306/LJMDB";
-//  String user = "leejumyeong";
-//	String password = "1111";
-	
-//	Connection con = DriverManager.getConnection(url,user,password);
-	//3. DB 연동
 	String sql = "select id,name,pwd from login";
 	Statement stmt = con.createStatement();
 	ResultSet rs = stmt.executeQuery(sql);
@@ -61,6 +52,7 @@
 	//5. DB 연결 해지
 	stmt.close();
 	con.close();
+	rs.close();
 	%>
 	</table>
 </body>

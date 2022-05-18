@@ -1,37 +1,52 @@
-<<<<<<< HEAD
+<%@page import="cs.dit.LoginDto" %>
+<%@page import="cs.dit.LoginDao" %>
+<%@page import="java.util.ArrayList" %>
+<%@page import="javax.sql.DataSource"%>
+<%@page import="javax.naming.Context"%>
+<%@page import="javax.naming.InitialContext"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8" import = "java.sql.*"%>
 <%
-	//1. jdbc driver 등록
-	Class.forName("org.mariadb.jdbc.Driver");
-	//2. db 와 연결 (Connection) 생성
-	String url = "jdbc:mariadb://localhost:3306/LJMDB";
-	String user = "leejumyeong";
-	String password = "1111";
+//DBCP를 사용하여 DB 연동
+	Context initCtx = new InitialContext();
+	Context envCtx = (Context)initCtx.lookup("java:comp/env");
+	DataSource ds = (DataSource)envCtx.lookup("jdbc/ljmdb");
+	Connection con = ds.getConnection();
 	
-	 Connection con = DriverManager.getConnection(url, user, password);
-	//3. DB 연동
-	String sql = "select id,name,pwd from login";
-	Statement stmt = con.createStatement();
-	ResultSet rs = stmt.executeQuery(sql);
-	//4. 결과 셋에서 데이터 추출하기
-	String id = "";
-	String name = "";
-	String pwd = "";
+	LoginDao dao = new LoginDao();
+	
+	ArrayList<LoginDto> dtos = dao.list();
+	
 %>	
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&display=swap" rel="stylesheet">	
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css">
   <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.slim.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js"></script>
+   <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="../css/styledata.css">
 <title>DB 연결</title>
 </head>
 <body>
-	<table class="table table-striped">
+ 		<div>
+        	<img id="webbanner" src="../images/Webben.png" alt="배너" width="800px" height="200px"/>
+        </div>
+        <div>
+        	   <img id="searchicon" alt="검색" src="../images/search.png" width="50px" height="50px">
+        	   <input id="searchinput" class="w3-input w3-border w3-round-large" type="text" placeholder="검색할 제목 혹은 아이디를 입력 하시오.">
+        </div>
+        <div id="userbox">
+        	<h2 style="font-family: 'Black Han Sans', sans-serif; font-size: 25px;">회원정보</h2>
+        </div>
+        <div id="userlist">
+	<table class="w3-table-all w3-hoverable">
 		<tr>
 			<th>id</th>
 			<th>name</th>
@@ -39,80 +54,18 @@
 		</tr>
 		<tr>
 <%
-	while(rs.next()){
-		id = rs.getString("id");
-		name = rs.getString("name");
-		pwd = rs.getString("pwd");
-%>
-	<td><a href="updateForm.jsp?id=<%=id %>"><%=id %></a></td>
-	<td><%=name %></td>
-	<td><%=pwd %></td>
+	for(LoginDto dto : dtos){
+		%>
+	<td><a href="updateForm.jsp?id=<%=dto.getId() %>"><%=dto.getId() %></a></td>
+	<td><%=dto.getName() %></td>
+	<td><%=dto.getPwd() %></td>
 	</tr>
 	
-	<%}
-	//5. DB 연결 해지
-	stmt.close();
-	con.close();
+	<% 
+		}	
 	%>
-	</table>
+	</table> <br>
+	<button type="button" class="button-3d" onclick="location.href='index.html'"> 돌아가기</button> <br>
+	</div>
 </body>
-=======
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8" import = "java.sql.*"%>
-<%
-	//1. jdbc driver 등록
-	Class.forName("org.mariadb.jdbc.Driver");
-	//2. db 와 연결 (Connection) 생성
-	String url = "jdbc:mariadb://localhost:3306/LJMDB";
-	String user = "LJM";
-	String password = "1111";
-	
-	 Connection con = DriverManager.getConnection(url, user, password);
-	//3. DB 연동
-	String sql = "select id,name,pwd from login";
-	Statement stmt = con.createStatement();
-	ResultSet rs = stmt.executeQuery(sql);
-	//4. 결과 셋에서 데이터 추출하기
-	String id = "";
-	String name = "";
-	String pwd = "";
-%>	
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css">
-  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.slim.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js"></script>
-<title>DB 연결</title>
-</head>
-<body>
-	<table class="table table-striped">
-		<tr>
-			<th>id</th>
-			<th>name</th>
-			<th>pwd</th>
-		</tr>
-		<tr>
-<%
-	while(rs.next()){
-		id = rs.getString("id");
-		name = rs.getString("name");
-		pwd = rs.getString("pwd");
-%>
-	<td><a href="updateForm.jsp?id=<%=id %>"><%=id %></a></td>
-	<td><%=name %></td>
-	<td><%=pwd %></td>
-	</tr>
-	
-	<%}
-	//5. DB 연결 해지
-	stmt.close();
-	con.close();
-	%>
-	</table>
-</body>
->>>>>>> 26cc58615144642b51cbfe62422defc8d2eb2059
 </html>
